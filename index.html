@@ -186,7 +186,55 @@ align-items:center;
 <footer>
 © 2026 Gulbazar.store | All Rights Reserved
 </footer>
+script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } 
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
+const firebaseConfig = {
+  apiKey: "AIzaSyAvBUoZTLYFlUtpKyovzfcqFz_iRyxMx-A",
+  authDomain: "gold-yen-483319-b8.firebaseapp.com",
+  projectId: "gold-yen-483319-b8",
+  storageBucket: "gold-yen-483319-b8.firebasestorage.app",
+  messagingSenderId: "247550198870",
+  appId: "1:247550198870:web:bde05d361f0ed3baf2a7f7"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+onAuthStateChanged(auth, (user) => {
+
+  if(user){
+    // User bar
+    const menu = document.querySelector(".menu");
+
+    const userInfo = document.createElement("span");
+    userInfo.style.marginLeft = "20px";
+    userInfo.innerText = user.email;
+
+    const logoutBtn = document.createElement("button");
+    logoutBtn.innerText = "Logout";
+    logoutBtn.style.marginLeft = "10px";
+    logoutBtn.style.padding = "5px 10px";
+    logoutBtn.style.cursor = "pointer";
+
+    logoutBtn.onclick = () => {
+      signOut(auth).then(() => {
+        window.location.href = "login.html";
+      });
+    };
+
+    menu.appendChild(userInfo);
+    menu.appendChild(logoutBtn);
+
+  } else {
+    // User ýok → login sahypa geçir
+    window.location.href = "login.html";
+  }
+
+});
+</script>
 </body>
 </html>
   
