@@ -1,23 +1,66 @@
 <!DOCTYPE html>
-<html lang="tk">
+<html>
 <head>
 <meta charset="UTF-8">
 <title>Blog</title>
 <style>
-body { font-family: Arial; text-align:center; padding:50px; }
-textarea { width:300px; height:100px; }
+body{font-family:Arial;padding:40px;}
+.post{
+  border:1px solid #ddd;
+  padding:15px;
+  margin-bottom:15px;
+  border-radius:8px;
+}
 </style>
 </head>
 <body>
 
-<h1>Blog Sahypasy ✍️</h1>
+<h1>Blog</h1>
+<div id="posts"></div>
 
-<textarea placeholder="Ýazgyňy ýaz..."></textarea>
-<br><br>
-<button onclick="alert('Ýazgy döredildi!')">Ýazgy döret</button>
+<script type="module">
 
-<br><br>
-<a href="index.html">⬅ Baş sahypa dolan</a>
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs } 
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "SENIN_API_KEY",
+  authDomain: "SENIN_AUTH_DOMAIN",
+  projectId: "SENIN_PROJECT_ID",
+  storageBucket: "SENIN_STORAGE_BUCKET",
+  messagingSenderId: "SENIN_MESSAGING_ID",
+  appId: "SENIN_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+async function loadPosts(){
+
+  const querySnapshot = await getDocs(collection(db, "posts"));
+
+  querySnapshot.forEach((doc) => {
+
+    const data = doc.data();
+
+    const div = document.createElement("div");
+    div.className = "post";
+
+    div.innerHTML = `
+      <h3>${data.title}</h3>
+      <p>${data.content}</p>
+    `;
+
+    document.getElementById("posts").appendChild(div);
+
+  });
+
+}
+
+loadPosts();
+
+</script>
 
 </body>
 </html>
