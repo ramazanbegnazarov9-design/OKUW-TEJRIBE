@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tk">
+<html>
 <head>
 <meta charset="UTF-8">
 <title>Profile</title>
@@ -9,21 +9,27 @@ body{
   background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
   color:white;
   text-align:center;
-  padding-top:100px;
+  padding-top:80px;
 }
 
 .card{
   background:white;
   color:black;
-  width:300px;
+  width:350px;
   margin:auto;
   padding:30px;
   border-radius:15px;
 }
 
+input, textarea{
+  width:100%;
+  padding:8px;
+  margin:5px 0;
+}
+
 button{
-  margin-top:20px;
-  padding:10px 20px;
+  margin-top:10px;
+  padding:8px 15px;
   cursor:pointer;
 }
 </style>
@@ -32,8 +38,13 @@ button{
 
 <div class="card">
   <h2>User Profile</h2>
+
   <p id="email"></p>
-  <p id="uid"></p>
+
+  <input type="text" id="name" placeholder="Adyň">
+  <textarea id="bio" placeholder="Bio ýaz"></textarea>
+
+  <button id="save">Save</button>
   <button id="logout">Logout</button>
 </div>
 
@@ -41,29 +52,56 @@ button{
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } 
 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc } 
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "SENIN_API_KEY",
-  authDomain: "SENIN_AUTH_DOMAIN",
-  projectId: "SENIN_PROJECT_ID",
-  storageBucket: "SENIN_STORAGE_BUCKET",
-  messagingSenderId: "SENIN_MESSAGING_ID",
-  appId: "SENIN_APP_ID"
+  apiKey: "AIzaSyAvBUoZTLYFlUtpKyovzfcqFz_iRyxMx-A",
+  authDomain: "gold-yen-483319-b8.firebaseapp.com",
+  projectId: "gold-yen-483319-b8",
+  storageBucket: "gold-yen-483319-b8.firebasestorage.app",
+  messagingSenderId: "247550198870",
+  appId: "1:247550198870:web:bde05d361f0ed3baf2a7f7"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
-onAuthStateChanged(auth, (user) => {
+let currentUser;
+
+onAuthStateChanged(auth, async (user) => {
 
   if(user){
+    currentUser = user;
     document.getElementById("email").innerText = "Email: " + user.email;
-    document.getElementById("uid").innerText = "User ID: " + user.uid;
+
+    const docRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(docRef);
+
+    if(docSnap.exists()){
+      document.getElementById("name").value = docSnap.data().name || "";
+      document.getElementById("bio").value = docSnap.data().bio || "";
+    }
+
   } else {
     window.location.href = "login.html";
   }
 
 });
+
+document.getElementById("save").onclick = async () => {
+
+  const name = document.getElementById("name").value;
+  const bio = document.getElementById("bio").value;
+
+  await setDoc(doc(db, "users", currentUser.uid), {
+    name: name,
+    bio: bio
+  });
+
+  alert("Saved successfully!");
+};
 
 document.getElementById("logout").onclick = () => {
   signOut(auth).then(() => {
