@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="tk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login / Register</title>
+
+<style>
+body{
+font-family: Arial;
+background: linear-gradient(135deg,#1e3c72,#2a5298);
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+color:white;
+}
+
+.container{
+background:white;
+color:#333;
+padding:30px;
+border-radius:15px;
+width:300px;
+text-align:center;
+}
+
+input{
+width:100%;
+padding:10px;
+margin:10px 0;
+border-radius:8px;
+border:1px solid #ccc;
+}
+
+button{
+width:100%;
+padding:10px;
+border:none;
+border-radius:8px;
+background:#2a5298;
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+
+button:hover{
+background:#1e3c72;
+}
+
+.toggle{
+margin-top:10px;
+cursor:pointer;
+color:#2a5298;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h2 id="title">Login</h2>
+
+<input type="text" id="username" placeholder="Username">
+<input type="password" id="password" placeholder="Password">
+
+<button onclick="submitForm()">Login</button>
+
+<div class="toggle" onclick="toggleMode()">Hasap ýokmy? Register</div>
+</div>
+
+<script>
+let isLogin = true;
+
+function toggleMode(){
+isLogin = !isLogin;
+document.getElementById("title").innerText = isLogin ? "Login" : "Register";
+document.querySelector("button").innerText = isLogin ? "Login" : "Register";
+document.querySelector(".toggle").innerText = isLogin ? 
+"Hasap ýokmy? Register" : 
+"Hasap bar? Login";
+}
+
+function submitForm(){
+let user = document.getElementById("username").value;
+let pass = document.getElementById("password").value;
+
+if(user === "" || pass === ""){
+alert("Maglumat doldur!");
+return;
+}
+
+if(isLogin){
+let savedUser = localStorage.getItem("user");
+let savedPass = localStorage.getItem("pass");
+
+if(user === savedUser && pass === savedPass){
+alert("Hoş geldiň " + user + " 🚀");
+window.location.href = "index.html";
+}else{
+alert("Nädogry maglumat!");
+}
+}else{
+localStorage.setItem("user", user);
+localStorage.setItem("pass", pass);
+alert("Hasap döredildi! Indi login et.");
+toggleMode();
+}
+}
+</script>
+
+</body>
+</html>
